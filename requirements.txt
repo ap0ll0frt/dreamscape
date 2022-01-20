@@ -1,0 +1,7 @@
+wheel
+flask
+gunicorn
+mysqlclient
+flask-sqlalchemy
+flask-login
+flask-mysqldb
